@@ -31,6 +31,7 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      // console.log(err);
       return res.status(400).json({
         errors: errors.array(),
       });
@@ -40,9 +41,11 @@ router.post(
 
     try {
       // See if user exists
+
       let user = await User.findOne({ email });
 
       if (user) {
+        console.log(user);
         return res
           .status(400)
           .json({ errors: [{ msg: 'User already exists' }] });
@@ -65,7 +68,7 @@ router.post(
       // Encrypt pass using bcrypt
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
-
+      console.log(user);
       await user.save();
 
       // Return jsonwebtoken
